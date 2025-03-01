@@ -1,0 +1,2 @@
+[22-Dec-2024 18:17:48 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/dark/pages-account-settings-account.php on line 386
+[22-Dec-2024 18:17:48 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/dark/pages-account-settings-account.php on line 396

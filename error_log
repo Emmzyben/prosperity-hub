@@ -1,0 +1,220 @@
+[22-Dec-2024 16:35:35 UTC] PHP Warning:  Undefined variable $stmtReferral in /home/cashstac/public_html/auth-register-basic.php on line 106
+[22-Dec-2024 16:35:35 UTC] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/cashstac/public_html/auth-register-basic.php:106
+Stack trace:
+#0 {main}
+  thrown in /home/cashstac/public_html/auth-register-basic.php on line 106
+[22-Dec-2024 16:38:04 UTC] PHP Warning:  Undefined variable $stmtReferral in /home/cashstac/public_html/auth-register-basic.php on line 108
+[22-Dec-2024 16:38:04 UTC] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/cashstac/public_html/auth-register-basic.php:108
+Stack trace:
+#0 {main}
+  thrown in /home/cashstac/public_html/auth-register-basic.php on line 108
+[22-Dec-2024 17:36:14 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 493
+[22-Dec-2024 17:46:30 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 493
+[22-Dec-2024 17:56:22 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/dashboard.php on line 541
+[22-Dec-2024 17:56:22 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/dashboard.php on line 541
+[22-Dec-2024 17:56:22 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/dashboard.php on line 541
+[22-Dec-2024 17:56:22 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/dashboard.php on line 541
+[22-Dec-2024 17:57:01 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/dashboard.php on line 368
+[22-Dec-2024 17:57:01 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/dashboard.php on line 378
+[22-Dec-2024 17:57:01 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/dashboard.php on line 485
+[22-Dec-2024 17:57:23 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/pages-account-settings-account.php on line 386
+[22-Dec-2024 17:57:23 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/pages-account-settings-account.php on line 396
+[22-Dec-2024 18:01:12 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/pages-account-settings-account.php on line 386
+[22-Dec-2024 18:01:12 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/pages-account-settings-account.php on line 396
+[22-Dec-2024 18:24:02 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 493
+[22-Dec-2024 19:22:13 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 493
+[22-Dec-2024 20:07:39 UTC] PHP Warning:  Undefined variable $stmtReferral in /home/cashstac/public_html/auth-register-basic.php on line 106
+[22-Dec-2024 20:07:39 UTC] PHP Fatal error:  Uncaught Error: Call to a member function execute() on null in /home/cashstac/public_html/auth-register-basic.php:106
+Stack trace:
+#0 {main}
+  thrown in /home/cashstac/public_html/auth-register-basic.php on line 106
+[22-Dec-2024 20:09:12 UTC] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in /home/cashstac/public_html/auth-register-basic.php on line 4
+[22-Dec-2024 20:16:20 UTC] PHP Deprecated:  DateTime::__construct(): Passing null to parameter #1 ($datetime) of type string is deprecated in /home/cashstac/public_html/withdrawal.php on line 42
+[23-Dec-2024 08:18:40 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 490
+[23-Dec-2024 08:31:22 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 490
+[23-Dec-2024 08:32:14 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 490
+[23-Dec-2024 08:49:00 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.available_withdrawals' in 'SELECT' in /home/cashstac/public_html/available_withdrawals.php:10
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(10): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 10
+[23-Dec-2024 08:50:10 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.available_withdrawals' in 'SELECT' in /home/cashstac/public_html/available_withdrawals.php:10
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(10): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 10
+[23-Dec-2024 08:50:47 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.available_withdrawals' in 'SELECT' in /home/cashstac/public_html/available_withdrawals.php:11
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(11): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 11
+[23-Dec-2024 08:52:51 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.referralBonus' in 'SELECT' in /home/cashstac/public_html/available_withdrawals.php:12
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(12): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 12
+[23-Dec-2024 08:54:01 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'i.user_id' in 'ON' in /home/cashstac/public_html/available_withdrawals.php:12
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(12): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 12
+[23-Dec-2024 09:07:02 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.referralBonus' in 'SELECT' in /home/cashstac/public_html/available_withdrawals.php:12
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(12): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 12
+[23-Dec-2024 09:07:52 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'u.referralBonus' in 'SELECT' in /home/cashstac/public_html/available_withdrawals.php:12
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(12): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 12
+[23-Dec-2024 09:08:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'i.user_id' in 'ON' in /home/cashstac/public_html/available_withdrawals.php:12
+Stack trace:
+#0 /home/cashstac/public_html/available_withdrawals.php(12): mysqli->query('SELECT u.id, u....')
+#1 {main}
+  thrown in /home/cashstac/public_html/available_withdrawals.php on line 12
+[23-Dec-2024 11:55:39 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[23-Dec-2024 11:55:39 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[23-Dec-2024 11:55:39 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[23-Dec-2024 11:55:39 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[23-Dec-2024 19:23:21 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 25
+[23-Dec-2024 19:23:21 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 25
+[23-Dec-2024 19:23:21 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 26
+[23-Dec-2024 19:23:21 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 26
+[23-Dec-2024 22:21:02 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 25
+[23-Dec-2024 22:21:02 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 25
+[23-Dec-2024 22:21:02 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 26
+[23-Dec-2024 22:21:02 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 26
+[23-Dec-2024 22:25:27 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 25
+[23-Dec-2024 22:25:27 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 25
+[23-Dec-2024 22:25:27 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 26
+[23-Dec-2024 22:25:27 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 26
+[24-Dec-2024 11:18:00 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[24-Dec-2024 11:18:00 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[24-Dec-2024 11:18:00 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[24-Dec-2024 11:18:00 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 10:35:50 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 10:35:50 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 10:35:50 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 10:35:50 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 11:42:55 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 25
+[25-Dec-2024 11:42:55 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 25
+[25-Dec-2024 11:42:55 UTC] PHP Warning:  Undefined array key "payment" in /home/cashstac/public_html/callback.php on line 26
+[25-Dec-2024 11:42:55 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/cashstac/public_html/callback.php on line 26
+[25-Dec-2024 12:53:43 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 12:53:43 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 12:53:43 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 12:53:43 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:03 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:03 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:03 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:03 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:05 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:05 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:05 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:05 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:07 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:07 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:07 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:07 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:08 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:08 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 13:02:08 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 13:02:08 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:51 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:51 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:51 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:51 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:52 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:52 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:52 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:52 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:54 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:54 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:54 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:54 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:55 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:55 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 16:28:55 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 16:28:55 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 17:56:14 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 504
+[25-Dec-2024 19:24:22 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:24:22 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:24:22 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 19:24:22 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 19:24:22 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:24:22 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:24:22 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 19:24:22 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 19:39:35 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:39:35 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:39:35 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 19:39:35 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 19:39:35 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:39:35 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 19:39:35 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 19:39:35 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:41:20 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:41:20 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:41:20 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:41:20 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:41:20 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:41:20 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:41:20 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:41:20 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:53:27 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:53:27 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:53:27 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:53:27 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:53:27 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:53:27 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 21:53:27 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 21:53:27 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 22:03:53 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 22:03:53 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 22:03:53 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 22:03:53 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 22:03:53 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 22:03:53 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[25-Dec-2024 22:03:53 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[25-Dec-2024 22:03:53 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[26-Dec-2024 13:33:55 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 504
+[26-Dec-2024 15:01:59 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[26-Dec-2024 15:01:59 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[26-Dec-2024 15:01:59 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[26-Dec-2024 15:01:59 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[27-Dec-2024 07:12:13 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[27-Dec-2024 07:12:13 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[27-Dec-2024 07:12:13 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[27-Dec-2024 07:12:13 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[27-Dec-2024 15:59:33 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[27-Dec-2024 15:59:33 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[27-Dec-2024 15:59:33 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[27-Dec-2024 15:59:33 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[27-Dec-2024 18:44:51 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[27-Dec-2024 18:44:51 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[27-Dec-2024 18:44:51 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[27-Dec-2024 18:44:51 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[28-Dec-2024 02:24:54 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[28-Dec-2024 02:24:54 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[28-Dec-2024 02:24:54 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[28-Dec-2024 02:24:54 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[28-Dec-2024 16:40:28 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[28-Dec-2024 16:40:28 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[28-Dec-2024 16:40:28 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[28-Dec-2024 16:40:28 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[28-Dec-2024 22:22:49 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[28-Dec-2024 22:22:49 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[28-Dec-2024 22:22:49 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[28-Dec-2024 22:22:49 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[29-Dec-2024 02:09:17 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[29-Dec-2024 02:09:17 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[29-Dec-2024 02:09:17 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[29-Dec-2024 02:09:17 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[29-Dec-2024 20:37:46 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/cashstac/public_html/delete.php:25) in /home/cashstac/public_html/delete.php on line 26
+[29-Dec-2024 21:46:59 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 504
+[31-Dec-2024 00:24:51 UTC] PHP Warning:  Undefined array key "email-username" in /home/cashstac/public_html/index.php on line 7
+[31-Dec-2024 00:24:51 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 7
+[31-Dec-2024 00:24:51 UTC] PHP Warning:  Undefined array key "password" in /home/cashstac/public_html/index.php on line 8
+[31-Dec-2024 00:24:51 UTC] PHP Deprecated:  trim(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/index.php on line 8
+[31-Dec-2024 20:28:06 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/cashstac/public_html/referal.php on line 504

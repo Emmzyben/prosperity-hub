@@ -1,0 +1,19 @@
+body{
+    background-color:black
+  }
+  .card{
+    background-color: black;
+  }
+  .menu-inner{
+    background-color: black;
+    border-right: 1px solid rgb(49, 47, 47);
+  }
+.container-xxl{
+    background-color: black;
+    border-top: 1px solid rgb(49, 47, 47);
+  }
+  .dropdown-menu{
+    background-color: black;
+  }
+ 
+ 
