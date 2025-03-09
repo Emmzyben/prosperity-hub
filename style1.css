@@ -94,7 +94,7 @@ div{
 }
 #bg{
     height: 400px;
-    background-image:url(images/maxresdefault.jpg);
+    background-image:url(./assets/660fa2347d3e8-gold-price-hovers-near-record-high-as-silver-sees-profit-booking-after-touching-all-time-high-050314544-16x9.webp);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -102,7 +102,8 @@ div{
   }
   #bg1{
     height: 250px;
-    background-image:url(images/maxresdefault.jpg);
+    background-image:url(./assets/660fa2347d3e8-gold-price-hovers-near-record-high-as-silver-sees-profit-booking-after-touching-all-time-high-050314544-16x9.webp);
+   
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
