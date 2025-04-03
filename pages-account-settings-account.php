@@ -32,9 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $existingUsername = $userDetails['username'];
     $existingPhoneNumber = $userDetails['phoneNumber'];
     $existingAddress = $userDetails['address'];
-    $existingState = $userDetails['state'];
-    $existingidNumber = $userDetails['idNumber'];
-    $existingidType = $userDetails['idType'];
 
     // Prepare an array to hold the updated fields
     $updateFields = [];
@@ -62,21 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $params[] = $_POST['address'];
         $paramTypes .= "s";
     }
-    if (!empty($_POST['state']) && $_POST['state'] !== $existingState) {
-        $updateFields[] = "state = ?";
-        $params[] = $_POST['state'];
-        $paramTypes .= "s";
-    }
-    if (!empty($_POST['idNumber']) && $_POST['idNumber'] !== $existingidNumber) {
-        $updateFields[] = "idNumber = ?";
-        $params[] = $_POST['idNumber'];
-        $paramTypes .= "s";
-    }
-    if (!empty($_POST['idType']) && $_POST['idType'] !== $existingidType) {
-      $updateFields[] = "idType = ?";
-      $params[] = $_POST['idType'];
-      $paramTypes .= "s";
-  }
+  
 
     // Only update if there are fields to update
     if (!empty($updateFields)) {
@@ -238,10 +221,9 @@ if (isset($_SESSION['message'])) {
           <div class="app-brand demo" style="margin-left: -20px">
             <a href="" class="app-brand-link">
             <span class="app-brand-logo demo">
-                   <img src="picture/section.png" alt="" style="width:100px">
+                   <img src="./assets/logo.png" alt="" style="width:80px">
                   </span>
-                  <span class="app-brand-text demo text-body fw-bolder" style="margin-left: -28px;color:black">ashStack</span>
-             
+      
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -265,23 +247,17 @@ if (isset($_SESSION['message'])) {
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div data-i18n="Layouts">Invest</div>
               </a>
-
             </li>
-            <li class="menu-item">
-              <a href="referal.php" class="menu-link">
-                  <i class="bx bx-user me-2"></i>
-                <div data-i18n="Layouts">Referal</div>
-              </a>
-
-            </li>
+       
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Pages</span>
             </li>
             
+             
             <li class="menu-item">
-              <a href="wallet.php" class="menu-link">
+              <a href="withdrawal.php" class="menu-link">
                 <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                <div data-i18n="Authentications">Wallet</div>
+                <div data-i18n="Authentications">Withdrawal</div>
               </a>
             </li>
             <li class="menu-item active">
@@ -462,7 +438,7 @@ if (isset($_SESSION['message'])) {
                               autofocus
                             />
                           </div>
-                        <div class="row">
+                        
                           <div class="mb-3 col-md-6">
                             <label for="firstName" class="form-label">Full Name</label>
                             <input
@@ -474,8 +450,8 @@ if (isset($_SESSION['message'])) {
                               autofocus
                             />
                           </div>
-                        
-                         
+</div>
+                          <div class="row">
                           <div class="mb-3 col-md-6">
                             <label class="form-label" for="phoneNumber">Phone Number</label>
                             <div class="input-group input-group-merge">
@@ -498,79 +474,14 @@ if (isset($_SESSION['message'])) {
                             
                             />
                           </div>
-                          <div class="mb-3 col-md-6">
-    <label for="state" class="form-label">State</label>
-    <select class="form-control" id="state" name="state">
-        <option value="">Select State</option>
-        <option value="Abia" <?= isset($userDetails['state']) && $userDetails['state'] === 'Abia' ? 'selected' : '' ?>>Abia</option>
-        <option value="Adamawa" <?= isset($userDetails['state']) && $userDetails['state'] === 'Adamawa' ? 'selected' : '' ?>>Adamawa</option>
-        <option value="Akwa Ibom" <?= isset($userDetails['state']) && $userDetails['state'] === 'Akwa Ibom' ? 'selected' : '' ?>>Akwa Ibom</option>
-        <option value="Anambra" <?= isset($userDetails['state']) && $userDetails['state'] === 'Anambra' ? 'selected' : '' ?>>Anambra</option>
-        <option value="Bauchi" <?= isset($userDetails['state']) && $userDetails['state'] === 'Bauchi' ? 'selected' : '' ?>>Bauchi</option>
-        <option value="Bayelsa" <?= isset($userDetails['state']) && $userDetails['state'] === 'Bayelsa' ? 'selected' : '' ?>>Bayelsa</option>
-        <option value="Benue" <?= isset($userDetails['state']) && $userDetails['state'] === 'Benue' ? 'selected' : '' ?>>Benue</option>
-        <option value="Borno" <?= isset($userDetails['state']) && $userDetails['state'] === 'Borno' ? 'selected' : '' ?>>Borno</option>
-        <option value="Cross River" <?= isset($userDetails['state']) && $userDetails['state'] === 'Cross River' ? 'selected' : '' ?>>Cross River</option>
-        <option value="Delta" <?= isset($userDetails['state']) && $userDetails['state'] === 'Delta' ? 'selected' : '' ?>>Delta</option>
-        <option value="Ebonyi" <?= isset($userDetails['state']) && $userDetails['state'] === 'Ebonyi' ? 'selected' : '' ?>>Ebonyi</option>
-        <option value="Edo" <?= isset($userDetails['state']) && $userDetails['state'] === 'Edo' ? 'selected' : '' ?>>Edo</option>
-        <option value="Ekiti" <?= isset($userDetails['state']) && $userDetails['state'] === 'Ekiti' ? 'selected' : '' ?>>Ekiti</option>
-        <option value="Enugu" <?= isset($userDetails['state']) && $userDetails['state'] === 'Enugu' ? 'selected' : '' ?>>Enugu</option>
-        <option value="Gombe" <?= isset($userDetails['state']) && $userDetails['state'] === 'Gombe' ? 'selected' : '' ?>>Gombe</option>
-        <option value="Imo" <?= isset($userDetails['state']) && $userDetails['state'] === 'Imo' ? 'selected' : '' ?>>Imo</option>
-        <option value="Jigawa" <?= isset($userDetails['state']) && $userDetails['state'] === 'Jigawa' ? 'selected' : '' ?>>Jigawa</option>
-        <option value="Kaduna" <?= isset($userDetails['state']) && $userDetails['state'] === 'Kaduna' ? 'selected' : '' ?>>Kaduna</option>
-        <option value="Kano" <?= isset($userDetails['state']) && $userDetails['state'] === 'Kano' ? 'selected' : '' ?>>Kano</option>
-        <option value="Kogi" <?= isset($userDetails['state']) && $userDetails['state'] === 'Kogi' ? 'selected' : '' ?>>Kogi</option>
-        <option value="Kwara" <?= isset($userDetails['state']) && $userDetails['state'] === 'Kwara' ? 'selected' : '' ?>>Kwara</option>
-        <option value="Lagos" <?= isset($userDetails['state']) && $userDetails['state'] === 'Lagos' ? 'selected' : '' ?>>Lagos</option>
-        <option value="Nasarawa" <?= isset($userDetails['state']) && $userDetails['state'] === 'Nasarawa' ? 'selected' : '' ?>>Nasarawa</option>
-        <option value="Niger" <?= isset($userDetails['state']) && $userDetails['state'] === 'Niger' ? 'selected' : '' ?>>Niger</option>
-        <option value="Ogun" <?= isset($userDetails['state']) && $userDetails['state'] === 'Ogun' ? 'selected' : '' ?>>Ogun</option>
-        <option value="Ondo" <?= isset($userDetails['state']) && $userDetails['state'] === 'Ondo' ? 'selected' : '' ?>>Ondo</option>
-        <option value="Osun" <?= isset($userDetails['state']) && $userDetails['state'] === 'Osun' ? 'selected' : '' ?>>Osun</option>
-        <option value="Oyo" <?= isset($userDetails['state']) && $userDetails['state'] === 'Oyo' ? 'selected' : '' ?>>Oyo</option>
-        <option value="Plateau" <?= isset($userDetails['state']) && $userDetails['state'] === 'Plateau' ? 'selected' : '' ?>>Plateau</option>
-        <option value="Rivers" <?= isset($userDetails['state']) && $userDetails['state'] === 'Rivers' ? 'selected' : '' ?>>Rivers</option>
-        <option value="Sokoto" <?= isset($userDetails['state']) && $userDetails['state'] === 'Sokoto' ? 'selected' : '' ?>>Sokoto</option>
-        <option value="Taraba" <?= isset($userDetails['state']) && $userDetails['state'] === 'Taraba' ? 'selected' : '' ?>>Taraba</option>
-        <option value="Yobe" <?= isset($userDetails['state']) && $userDetails['state'] === 'Yobe' ? 'selected' : '' ?>>Yobe</option>
-        <option value="Zamfara" <?= isset($userDetails['state']) && $userDetails['state'] === 'Zamfara' ? 'selected' : '' ?>>Zamfara</option>
-    </select>
 </div>
 
-<div class="mb-3 col-md-6">
-    <label for="idType" class="form-label">Select ID type</label>
-    <?php if (!empty($userDetails['idType'])): ?>
-        <p class="form-control-plaintext">ID already set</p>
-    <?php else: ?>
-    <select class="form-control" id="idType" name="idType">
-      <option value="NIN">NIN</option>
-      <option value="Driving License">Driving License</option>
-    </select>
-    <?php endif; ?>
-</div>
-<div class="mb-3 col-md-6">
-    <?php if (!empty($userDetails['idNumber'])): ?>
-        <p class="form-control-plaintext"></p>
-    <?php else: ?>
-      <label for="bvn" class="form-label">ID number</label>
-        <input 
-            class="form-control" 
-            type="text" 
-            id="idNumber" 
-            name="idNumber" 
-            placeholder="Enter ID number" 
-        />
-    <?php endif; ?>
-</div>
-
-
-                        </div>
-                        <div class="mt-2">
+ <div class="mt-2">
                           <button type="submit" class="btn btn-primary me-2">Save changes</button>
                           <button type="reset" class="btn btn-outline-secondary">Cancel</button>
                         </div>
+                        </div>
+                       
                       </form>
                     </div>
                     <!-- /Account -->

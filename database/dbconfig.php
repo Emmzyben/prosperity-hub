@@ -1,13 +1,10 @@
 <?php
 
-// $servername = "localhost"; 
-// $username = "root";      
-// $password = "";          
-// $dbname = "cashstack"; 
 $servername = "localhost"; 
-$username = "cashstac_cashstack";      
-$password = "cashstack1234";          
-$dbname = "cashstac_cashstack"; 
+$username = "root";      
+$password = "";          
+$dbname = "phgi"; 
+
 try {
     $conn = @new mysqli($servername, $username, $password, $dbname);
 

@@ -11,12 +11,23 @@ include './database/dbconfig.php';
 
 $userId = $_SESSION['userId'];
 
-// Modify the query to order by combined date and time in descending order
-$query = "SELECT * FROM transactions 
-          WHERE transactionType = 'withdrawal' 
-          AND (status = 'pending' OR status = 'declined' OR status = 'NEW' OR status = 'FAILED') 
-          ORDER BY CONCAT(date, ' ', time) DESC";  // Combine date and time for sorting
+$query = "SELECT investment.*, users.fullname
+          FROM investment
+          INNER JOIN users ON investment.user_id = users.id
+          WHERE investment.status = 'pending'
+          ORDER BY investment.created_at DESC";
+
 $result = $conn->query($query);
+
+$query = "SELECT withdrawal.*, users.fullname
+          FROM withdrawal
+          INNER JOIN users ON withdrawal.user_id = users.id
+          WHERE withdrawal.status = 'pending'
+          ORDER BY withdrawal.date DESC";
+
+$withdrawalResult = $conn->query($query);
+
+
 
 // Query to get all users
 $queryUsers = "SELECT id FROM users";
@@ -30,7 +41,7 @@ if ($resultUsers->num_rows > 0) {
         $userId = $user['id'];
 
         // Query to get the package for the user from the investment table
-        $queryPackage = "SELECT package FROM investment WHERE id = ?";
+        $queryPackage = "SELECT package FROM investment WHERE user_id = ?";
         $stmt = $conn->prepare($queryPackage);
         $stmt->bind_param("i", $userId);
         $stmt->execute();
@@ -114,63 +125,11 @@ if ($resultUsers->num_rows > 0) {
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
-            <a href="index.html" class="app-brand-link">
-              <span class="app-brand-logo demo">
-                <svg
-                  width="25"
-                  viewBox="0 0 25 42"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                >
-                  <defs>
-                    <path
-                      d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z"
-                      id="path-1"
-                    ></path>
-                    <path
-                      d="M5.47320593,6.00457225 C4.05321814,8.216144 4.36334763,10.0722806 6.40359441,11.5729822 C8.61520715,12.571656 10.0999176,13.2171421 10.8577257,13.5094407 L15.5088241,14.433041 L18.6192054,7.984237 C15.5364148,3.11535317 13.9273018,0.573395879 13.7918663,0.358365126 C13.5790555,0.511491653 10.8061687,2.3935607 5.47320593,6.00457225 Z"
-                      id="path-3"
-                    ></path>
-                    <path
-                      d="M7.50063644,21.2294429 L12.3234468,23.3159332 C14.1688022,24.7579751 14.397098,26.4880487 13.008334,28.506154 C11.6195701,30.5242593 10.3099883,31.790241 9.07958868,32.3040991 C5.78142938,33.4346997 4.13234973,34 4.13234973,34 C4.13234973,34 2.75489982,33.0538207 2.37032616e-14,31.1614621 C-0.55822714,27.8186216 -0.55822714,26.0572515 -4.05231404e-15,25.8773518 C0.83734071,25.6075023 2.77988457,22.8248993 3.3049379,22.52991 C3.65497346,22.3332504 5.05353963,21.8997614 7.50063644,21.2294429 Z"
-                      id="path-4"
-                    ></path>
-                    <path
-                      d="M20.6,7.13333333 L25.6,13.8 C26.2627417,14.6836556 26.0836556,15.9372583 25.2,16.6 C24.8538077,16.8596443 24.4327404,17 24,17 L14,17 C12.8954305,17 12,16.1045695 12,15 C12,14.5672596 12.1403557,14.1461923 12.4,13.8 L17.4,7.13333333 C18.0627417,6.24967773 19.3163444,6.07059163 20.2,6.73333333 C20.3516113,6.84704183 20.4862915,6.981722 20.6,7.13333333 Z"
-                      id="path-5"
-                    ></path>
-                  </defs>
-                  <g id="g-app-brand" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                    <g id="Brand-Logo" transform="translate(-27.000000, -15.000000)">
-                      <g id="Icon" transform="translate(27.000000, 15.000000)">
-                        <g id="Mask" transform="translate(0.000000, 8.000000)">
-                          <mask id="mask-2" fill="white">
-                            <use xlink:href="#path-1"></use>
-                          </mask>
-                          <use fill="#696cff" xlink:href="#path-1"></use>
-                          <g id="Path-3" mask="url(#mask-2)">
-                            <use fill="#696cff" xlink:href="#path-3"></use>
-                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-3"></use>
-                          </g>
-                          <g id="Path-4" mask="url(#mask-2)">
-                            <use fill="#696cff" xlink:href="#path-4"></use>
-                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-4"></use>
-                          </g>
-                        </g>
-                        <g
-                          id="Triangle"
-                          transform="translate(19.000000, 11.000000) rotate(-300.000000) translate(-19.000000, -11.000000) "
-                        >
-                          <use fill="#696cff" xlink:href="#path-5"></use>
-                          <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-5"></use>
-                        </g>
-                      </g>
-                    </g>
-                  </g>
-                </svg>
-              </span>
-              <span class="app-brand-text demo menu-text fw-bolder ms-2">CashStack</span>
+          <a href="" class="app-brand-link">
+            <span class="app-brand-logo demo">
+                   <img src="../assets/logo.png" alt="" style="width:80px">
+                  </span>
+                
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -189,13 +148,7 @@ if ($resultUsers->num_rows > 0) {
               </a>
             </li>
 
-            <li class="menu-item">
-              <a href="fundUser.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-layout"></i>
-                <div data-i18n="Layouts">Fund User</div>
-              </a>
-
-            </li>
+        
             <li class="menu-item">
               <a href="logout.php" class="menu-link">
               <i class="bx bx-power-off me-2"></i>
@@ -252,19 +205,17 @@ if ($resultUsers->num_rows > 0) {
         <table class="table table-dark">
             <thead>
                 <tr>
-                    <th>Basic (#3000)</th>
-                    <th>Bronze (#6000)</th>
-                    <th>Silver (#9000)</th>
-                    <th>Gold (#12000)</th>
-                    <th>Diamond (#15000)</th>
-                    <th>Platinum (#18000)</th>
+                    <th>Basic (#100)</th>
+                    <th>Intermidiate (#5000)</th>
+                    <th>Professional Plan (#15000)</th>
+                    <th>Expert plan(#60000)</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
                 <tr>
                     <?php
                     // Initialize package counts
-                    $packageNames = ['Basic', 'Bronze', 'Silver', 'Gold', 'Diamond', 'Platinum'];
+                    $packageNames = ['Basic', 'Intermidiate', 'Professional', 'Expert'];
                     $packageCounts = array_fill_keys($packageNames, 0);
 
                     // Fetch all users and their packages
@@ -274,7 +225,7 @@ if ($resultUsers->num_rows > 0) {
                     if ($resultUsers->num_rows > 0) {
                         while ($user = $resultUsers->fetch_assoc()) {
                             $userId = $user['id'];
-                            $queryPackage = "SELECT package FROM investment WHERE id = ?";
+                            $queryPackage = "SELECT package FROM investment WHERE user_id = ?";
                             $stmt = $conn->prepare($queryPackage);
                             $stmt->bind_param("i", $userId);
                             $stmt->execute();
@@ -316,66 +267,69 @@ if ($resultUsers->num_rows > 0) {
     <!-- Hoverable Table rows -->
     <div class="container mt-5">
     <div class="card">
-    <h5 class="card-header">Pending Withdrawals</h5>
+    <h5 class="card-header">Pending Investments</h5>
     <div class="table-responsive text-nowrap">
-        <table class="table table-hover">
-            <thead>
+    <table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Investor Name</th>
+            <th>Package</th>
+            <th>Package Amount</th>
+            <th>Deposit Method</th>
+            <th>Proof of Payment</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="table-border-bottom-0">
+        <?php if ($result && $result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
                 <tr>
-                    <th>Account Name</th>
-                    <th>Account Number</th>
-                    <th>Bank</th>
-                    <th>Amount</th>
-                    <th>Transaction Type</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <td><strong><?php echo htmlspecialchars($row['fullname']); ?></strong></td>
+                    <td><strong><?php echo htmlspecialchars($row['package']); ?></strong></td>
+                    <td>₦<?php echo number_format($row['package_amount'], 2); ?></td>
+                    <td><strong><?php echo htmlspecialchars($row['deposit_method']); ?></strong></td>
+                    <td>
+                        <?php if (!empty($row['proof_of_payment'])): ?>
+                            <a href="../<?php echo htmlspecialchars($row['proof_of_payment']); ?>" 
+                               download 
+                               class="btn btn-sm btn-primary">
+                                Download Proof
+                            </a>
+                        <?php else: ?>
+                            <span class="text-muted">No proof uploaded</span>
+                        <?php endif; ?>
+                    </td>
+                    <td><strong><?php echo date('d M Y, h:i A', strtotime($row['created_at'])); ?></strong></td>
+                    <td><span class="badge bg-label-warning me-1"><?php echo ucfirst($row['status']); ?></span></td>
+                    <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0);" 
+                                   onclick="confirmAction('approve', '<?php echo $row['investmentId']; ?>')">
+                                    <i class="bx bx-edit-alt me-1"></i> Approve
+                                </a>
+                                <a class="dropdown-item" href="javascript:void(0);" 
+                                   onclick="confirmAction('decline', '<?php echo $row['investmentId']; ?>')">
+                                    <i class="bx bx-trash me-1"></i> Decline
+                                </a>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-                <?php if ($result && $result->num_rows > 0): ?>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
-                            <td><strong><?php echo $row['account_name']; ?></strong></td>
-                            <td><strong><?php echo $row['account_number']; ?></strong></td>
-                            <td><strong><?php echo $row['bank_name']; ?></strong></td>
-                            <td>₦<?php echo number_format($row['amount'], 2); ?></td>
-                            <td><?php echo ucfirst($row['transactionType']); ?></td>
-                            <td><span class="badge bg-label-warning me-1"><?php echo ucfirst($row['status']); ?></span></td>
-                            <td>
-                                <div class="dropdown">
-                                    <button
-                                        type="button"
-                                        class="btn p-0 dropdown-toggle hide-arrow"
-                                        data-bs-toggle="dropdown"
-                                    >
-                                        <i class="bx bx-dots-vertical-rounded"></i>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a
-                                            class="dropdown-item"
-                                            href="javascript:void(0);"
-                                            onclick="confirmAction('approve', '<?php echo $row['transactionId']; ?>')"
-                                        >
-                                            <i class="bx bx-edit-alt me-1"></i> Approve
-                                        </a>
-                                        <a
-                                            class="dropdown-item"
-                                            href="javascript:void(0);"
-                                            onclick="confirmAction('decline', '<?php echo $row['transactionId']; ?>')"
-                                        >
-                                            <i class="bx bx-trash me-1"></i> Decline
-                                        </a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="5" class="text-center">No pending withdrawal transactions found.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="8" class="text-center">No pending investment transactions found.</td>
+            </tr>
+        <?php endif; ?>
+    </tbody>
+</table>
+
     </div>
 </div>
 
@@ -427,6 +381,126 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($transactionId && $actionType) {
         // Call the handleTransaction function with the parameters
         handleTransaction($transactionId, $actionType);
+    }
+}
+
+?>
+
+
+
+
+</div>
+
+
+
+            <div class="content-backdrop fade"></div>
+          </div>
+
+
+
+          <div class="container mt-5">
+    <div class="card">
+    <h5 class="card-header">Pending Withdrawals</h5>
+    <div class="table-responsive text-nowrap">
+    <table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Investor Name</th>
+            <th>Withdrawal Method</th>
+            <th>Amount</th>
+            <th>Wallet Address</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="table-border-bottom-0">
+    <?php if ($withdrawalResult && $withdrawalResult->num_rows > 0): ?>
+        <?php while ($row = $withdrawalResult->fetch_assoc()): ?>
+            <tr>
+                <td><strong><?php echo htmlspecialchars($row['fullname']); ?></strong></td>
+                <td><strong><?php echo htmlspecialchars($row['withdrawal_method']); ?></strong></td>
+                <td>₦<?php echo number_format($row['amount'], 2); ?></td>
+                <td><strong><?php echo htmlspecialchars($row['wallet_address']); ?></strong></td>
+                <td><strong><?php echo date('d M Y, h:i A', strtotime($row['date'])); ?></strong></td>
+                <td><span class="badge bg-label-warning me-1"><?php echo ucfirst($row['status']); ?></span></td>
+                <td>
+                    <div class="dropdown">
+                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                            <i class="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0);" 
+                               onclick="confirmAction2('approve', '<?php echo $row['id']; ?>')">
+                                <i class="bx bx-edit-alt me-1"></i> Approve
+                            </a>
+                            <a class="dropdown-item" href="javascript:void(0);" 
+                               onclick="confirmAction2('decline', '<?php echo $row['id']; ?>')">
+                                <i class="bx bx-trash me-1"></i> Decline
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="8" class="text-center">No pending withdrawal transactions found.</td>
+        </tr>
+    <?php endif; ?>
+</tbody>
+
+</table>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<!-- Withdrawal Modal -->
+<div class="modal fade" id="verificationModalWithdrawal" tabindex="-1" aria-labelledby="verificationModalWithdrawalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verificationModalWithdrawalLabel">Confirm Withdrawal Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to <span id="withdrawalActionType"></span> this withdrawal?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="withdrawalTransactionForm" method="POST" action="">
+                    <input type="hidden" name="transactionId" id="withdrawalTransactionId">
+                    <input type="hidden" name="actionType" id="withdrawalActionTypeInput">
+                    <button type="submit" class="btn btn-primary">Proceed</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmAction2(actionType, transactionId) {
+        document.getElementById('withdrawalActionType').textContent = actionType;
+        document.getElementById('withdrawalTransactionId').value = transactionId;
+        document.getElementById('withdrawalActionTypeInput').value = actionType;
+
+        new bootstrap.Modal(document.getElementById('verificationModalWithdrawal')).show();
+    }
+</script>
+
+
+<?php
+// Include your PHP function here
+include 'approveWithdrawal.php';  
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $transactionId = isset($_POST['transactionId']) ? $_POST['transactionId'] : null;
+    $actionType = isset($_POST['actionType']) ? $_POST['actionType'] : null;
+
+    if ($transactionId && $actionType) {
+        handleWithdrawal($transactionId, $actionType);
     }
 }
 

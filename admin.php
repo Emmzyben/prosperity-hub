@@ -149,7 +149,7 @@ if (isset($_SESSION['message'])) {
               <div class="app-brand justify-content-center">
                 <a href="#" class="app-brand-link gap-2">
                  
-                  <span class="app-brand-text demo text-body fw-bolder">CashStack Admin Login</span>
+                  <span class="app-brand-text demo text-body fw-bolder">Admin Login</span>
                 </a>
               </div>
               <!-- /Logo -->

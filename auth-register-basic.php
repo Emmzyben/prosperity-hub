@@ -13,7 +13,7 @@ function generateReferralCode($username) {
     return $prefix . $randomNumber;
 }
 
-define('BASE_URL', 'http://cashstack.ng/auth-register-basic.php'); // Replace with your actual site URL
+define('BASE_URL', 'http://localhost/cashstack/auth-register-basic.php'); 
 
 // Check if a refcode exists in the URL
 if (isset($_GET['ref']) && !empty(trim($_GET['ref']))) {
@@ -228,10 +228,9 @@ if (isset($_SESSION['message'])) {
               <div class="app-brand justify-content-center" style="margin-left: -35px;">
                 <a href="#" class="app-brand-link gap-2">
                   <span class="app-brand-logo demo">
-                   <img src="picture/logo.png" alt="" style="width:100px">
+                   <img src="./assets/logo.png" alt="" style="width:150px">
                   </span>
-                  <span class="app-brand-text demo text-body fw-bolder" style="margin-left: -30px;">ashStack</span>
-                </a>
+              </a>
               </div>
               <!-- /Logo -->
               <h4 class="mb-2">Adventure starts here 🚀</h4>

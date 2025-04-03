@@ -142,9 +142,9 @@ $conn->close();
           <div class="app-brand demo" style="margin-left: -20px">
             <a href="" class="app-brand-link">
             <span class="app-brand-logo demo">
-                   <img src="picture/section.png" alt="" style="width:100px">
+                    <img src="./assets/logo.png" alt="" style="width:80px">
                   </span>
-                  <span class="app-brand-text demo text-body fw-bolder" style="margin-left: -28px;color:black">ashStack</span>
+                  
              
             </a>
 

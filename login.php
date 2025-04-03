@@ -149,13 +149,12 @@ if (isset($_SESSION['message'])) {
               <div class="app-brand justify-content-center" style="margin-left: -35px;">
                 <a href="#" class="app-brand-link gap-2">
                   <span class="app-brand-logo demo">
-                   <img src="picture/logo.png" alt="" style="width:100px">
+                   <img src="./assets/logo.png" alt="" style="width:150px">
                   </span>
-                  <span class="app-brand-text demo text-body fw-bolder" style="margin-left: -30px;">ashStack</span>
-                </a>
+               </a>
               </div>
               <!-- /Logo -->
-              <h4 class="mb-2">Welcome to CashStack! 👋</h4>
+              <h4 class="mb-2">Prosperity hub global incorporated! 👋</h4>
               <p class="mb-4">Please sign-in to your account and start the adventure</p>
               <div id="popupOverlay" class="popup-overlay"></div>
     <div id="popupMessage" class="popup-message <?php echo $messageType == 'success' ? 'popup-success' : 'popup-error'; ?>">
@@ -202,9 +201,9 @@ if (isset($_SESSION['message'])) {
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
                     <label class="form-label" for="password">Password</label>
-                    <a href="auth-forgot-password-basic.php">
+                    <!-- <a href="auth-forgot-password-basic.php">
                       <small>Forgot Password?</small>
-                    </a>
+                    </a> -->
                   </div>
                   <div class="input-group input-group-merge">
                     <input

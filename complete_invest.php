@@ -1,18 +1,18 @@
-
 <?php
 session_start();
-include './database/dbconfig.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['userId'])) {
-    $_SESSION['message'] = "You must log in first!";
-    $_SESSION['messageType'] = "error";
     header('Location: login.php');
     exit();
 }
 
-// Get user details
+include './database/dbconfig.php';
+require 'send_email.php';
+
 $userId = $_SESSION['userId'];
+$amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '';
+// Fetch user's details including balance
 $sql = "SELECT * FROM users WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userId);
@@ -21,23 +21,145 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $userDetails = $result->fetch_assoc();
-    $userBalance = $userDetails['balance'];
     $fullName = $userDetails['fullname'];
+    $email = $userDetails['email'];
+    $currentBalance = $userDetails['balance'];
 } else {
-    $_SESSION['message'] = "User not found.";
+    $_SESSION['message'] = "No user found.";
     $_SESSION['messageType'] = "error";
     header('Location: invest.php');
     exit();
 }
-
-// Close statement
 $stmt->close();
 
+// Check if the investment form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $package = $_POST['package'];
+    $packageAmount = (int)$_POST['investment_amount'];
+    $deposit_method = $_POST['deposit_method'];
 
-  if (isset($_SESSION['message'])) {
+    // Process file upload for proof of payment
+    if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
+        $uploadDir = "uploads/";
+        $allowedExtensions = array("jpg", "jpeg", "png", "pdf");
+        $filename = basename($_FILES['proof_of_payment']['name']);
+        $fileExt = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        if (!in_array($fileExt, $allowedExtensions)) {
+            $_SESSION['message'] = "Invalid file type. Only JPG, JPEG, PNG, and PDF files are allowed.";
+            $_SESSION['messageType'] = "error";
+            header('Location: complete_invest.php');
+            exit();
+        }
+
+        $fileTmpName = $_FILES['proof_of_payment']['tmp_name'];
+        $newFileName = time() . "_" . $filename;
+        $filePath = $uploadDir . $newFileName;
+
+        if (!move_uploaded_file($fileTmpName, $filePath)) {
+            $_SESSION['message'] = "Error uploading proof of payment.";
+            $_SESSION['messageType'] = "error";
+            header('Location: invest.php');
+            exit();
+        }
+        $proofOfPayment = $filePath;
+    } else {
+        $_SESSION['message'] = "File upload failed. Please try again.";
+        $_SESSION['messageType'] = "error";
+        header('Location: complete_invest.php');
+        exit();
+    }
+
+    // Check if the user has already invested
+    $investmentCheckSql = "SELECT * FROM investment WHERE user_id = ?";
+    $investmentCheckStmt = $conn->prepare($investmentCheckSql);
+    $investmentCheckStmt->bind_param("i", $userId);
+    $investmentCheckStmt->execute();
+    $investmentCheckResult = $investmentCheckStmt->get_result();
+
+    if ($investmentCheckResult->num_rows > 0) {
+        $_SESSION['message'] = "There is an ongoing investment.";
+        $_SESSION['messageType'] = "error";
+        $investmentCheckStmt->close();
+        header('Location: complete_invest.php');
+        exit();
+    }
+    $investmentCheckStmt->close();
+
+    // Insert the investment into the `investment` table
+    $status = "pending";
+    $sql = "INSERT INTO investment (user_id, package, package_amount, created_at, deposit_method, proof_of_payment, status) 
+            VALUES (?, ?, ?, NOW(), ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isisss", $userId, $package, $packageAmount, $deposit_method, $proofOfPayment, $status);
+
+    if ($stmt->execute()) {
+        // Get the last inserted ID (investment ID)
+        $investmentId = $stmt->insert_id;
+
+        // Update the user's subscription date and balance
+        $newBalance = $currentBalance + $packageAmount;
+        $subscriptionDate = date('Y-m-d');
+        $updateSql = "UPDATE users SET subscription_date = ?, balance = ? WHERE id = ?";
+        $updateStmt = $conn->prepare($updateSql);
+        $updateStmt->bind_param("sii", $subscriptionDate, $newBalance, $userId);
+
+        if ($updateStmt->execute()) {
+            // Insert into transactions table
+            $transactionSql = "INSERT INTO transactions (user_id, insert_id, amount, status, date, transaction_type) 
+                               VALUES (?, ?, ?, 'pending', CURDATE(), 'deposit')";
+            $transactionStmt = $conn->prepare($transactionSql);
+            $transactionStmt->bind_param("iii", $userId, $investmentId, $packageAmount);
+            $transactionStmt->execute();
+            $transactionStmt->close();
+
+            // Check if user was referred and update referral package
+            $referralSql = "SELECT referred_id FROM referrals_table WHERE referred_id = ?";
+            $referralStmt = $conn->prepare($referralSql);
+            $referralStmt->bind_param("i", $userId);
+            $referralStmt->execute();
+            $referralResult = $referralStmt->get_result();
+
+            if ($referralResult->num_rows > 0) {
+                $referral = $referralResult->fetch_assoc();
+                $referredId = $referral['referred_id'];
+
+                $updateReferralSql = "UPDATE referrals_table SET package = ?, package_amount = ? WHERE referred_id = ?";
+                $updateReferralStmt = $conn->prepare($updateReferralSql);
+                $updateReferralStmt->bind_param("sii", $package, $packageAmount, $referredId);
+                $updateReferralStmt->execute();
+                $updateReferralStmt->close();
+            }
+            $referralStmt->close();
+
+            $_SESSION['message'] = "Investment successful!";
+            $_SESSION['messageType'] = "success";
+            $message = "You have successfully invested in the `$package` investment package. You can log in daily to check your earnings";
+            $subject = "Investment Successful";
+
+            // Send notification email
+            sendEmail($fullName, $email, $message, $subject);
+        } else {
+            $_SESSION['message'] = "Investment successful, but error updating subscription date.";
+            $_SESSION['messageType'] = "error";
+        }
+        $updateStmt->close();
+    } else {
+        $_SESSION['message'] = "Error during investment.";
+        $_SESSION['messageType'] = "error";
+    }
+    $stmt->close();
+
+    header('Location: complete_invest.php');
+    exit();
+}
+
+$conn->close();
+
+// Retrieve any message for display
+if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
     $messageType = $_SESSION['messageType'];
-
     unset($_SESSION['message']);
     unset($_SESSION['messageType']);
 } else {
@@ -62,8 +184,9 @@ $stmt->close();
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <title>Invest Now</title>
+    <title>Invest now</title>
 
     <meta name="description" content="" />
 
@@ -215,6 +338,45 @@ $stmt->close();
   <?php endif; ?>
 </div>
 
+<script>
+  // Fetch the message from PHP
+  var message = "<?php echo $message; ?>";
+  var popupMessage = document.getElementById("popupMessage");
+  var popupOverlay = document.getElementById("popupOverlay");
+  var closeButton = document.getElementById("closeButton");
+
+  // Check if there is a message to display
+  if (message) {
+    // Show the overlay and message
+    popupOverlay.style.display = "block";
+    popupMessage.style.display = "block";
+
+    // Determine action based on message type
+    <?php if ($messageType === 'error') : ?>
+      // Redirect to fund.php after 2 seconds for balance errors
+      setTimeout(function() {
+        window.location.href = 'invest.php';
+      }, 2000); 
+    <?php elseif ($messageType === 'success') : ?>
+      // Redirect to dashboard.php after 2 seconds for success messages
+      setTimeout(function() {
+        window.location.href = 'dashboard.php';
+      }, 2000); 
+    <?php else : ?>
+      // Hide the message after 5 seconds for other messages
+      setTimeout(function() {
+        popupMessage.style.display = "none";
+        popupOverlay.style.display = "none";
+      }, 5000); 
+
+      // Close the popup when the close button is clicked
+      closeButton.addEventListener("click", function() {
+        popupMessage.style.display = "none";
+        popupOverlay.style.display = "none";
+      });
+    <?php endif; ?>
+  }
+</script>
 
 
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -256,7 +418,7 @@ $stmt->close();
             </li>
             
              
-            <li class="menu-item ">
+            <li class="menu-item">
               <a href="withdrawal.php" class="menu-link">
                 <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
                 <div data-i18n="Authentications">Withdrawal</div>
@@ -370,103 +532,114 @@ $stmt->close();
           <!-- / Navbar -->
 
           <!-- Content wrapper -->
-          <div class="content-wrapper"  id="diva">
+          <div class="content-wrapper"  id="diva" >
             <!-- Content -->
 
-            <div class="container-xxl flex-grow-1 container-p-y"  id="diva">
-             
-            <div style="text-align:center"  id="diva">
-                <h5 class="card-title">Investment <span style="color:#34FFB4">Plans</span></h5>
-                <p class="mb-4">To make a solid investment, you have to know where you are investing, find a plan which is best for you</p>
-            </div>
-          
-         
-            <div id="how2">
-    <div>
-        <h3>Basic Plan</h3>
-        <p>Investment</p>
-        <h3>$100</h3>
-        <p>-</p>
-        <h3>$4999</h3>
-
-        <p>Profit</p>
-        <h3>2% Daily</h3>
-
-        <p>Duration</p>
-        <h3>6 Days</h3>
-
-        <p>Referral Bonus</p>
-        <h3>10%</h3>
-
-        <button class="btn btn-primary" onclick="redirectToInvestment(100)">Invest Now</button>
+<div class="container mt-5"style="margin-bottom:20px">
+    <div class="card shadow-lg p-4">
+        <h3 class="text-center mb-4">Complete Your Investment</h3>
+        <form action="" method="POST" enctype="multipart/form-data">
+    <input type="hidden" id="package" name="package">
+    
+    <!-- Investment Amount -->
+    <div class="mb-3">
+        <label for="investment_amount" class="form-label">Investment Amount:</label>
+        <input type="text" class="form-control" id="investment_amount" name="investment_amount" value="<?php echo $amount; ?>" readonly>
     </div>
 
-    <div>
-        <h3>Intermediate Plan</h3>
-        <p>Investment</p>
-        <h3>$5000</h3>
-        <p>-</p>
-        <h3>$14999</h3>
-
-        <p>Profit</p>
-        <h3>2.5% Daily</h3>
-
-        <p>Duration</p>
-        <h3>6 Days</h3>
-
-        <p>Referral Bonus</p>
-        <h3>10%</h3>
-
-        <button class="btn btn-primary" onclick="redirectToInvestment(5000)">Invest Now</button>
+    <!-- Deposit Method -->
+    <div class="mb-3">
+        <label for="deposit_method" class="form-label">Deposit Method</label>
+        <select class="form-select" id="deposit_method" name="deposit_method" onchange="updateWalletAddress()">
+            <option value="Ethereum">Ethereum</option>
+            <option value="Bitcoin">Bitcoin</option>
+            <option value="USDT">USDT (TRC20)</option>
+            <option value="BNB">BNB</option>
+            <option value="Dogecoin">DogeCoin</option>
+        </select>
     </div>
 
-    <div>
-        <h3>Professional Plan</h3>
-        <p>Investment</p>
-        <h3>$15000</h3>
-        <p>-</p>
-        <h3>$59999</h3>
-
-        <p>Profit</p>
-        <h3>3% Daily</h3>
-
-        <p>Duration</p>
-        <h3>10 Days</h3>
-
-        <p>Referral Bonus</p>
-        <h3>10%</h3>
-
-        <button class="btn btn-primary" onclick="redirectToInvestment(15000)">Invest Now</button>
+    <!-- Wallet Address Display -->
+    <div class="mb-3">
+        <label class="form-label">Wallet Address</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="wallet_address" readonly>
+            <button type="button" class="btn btn-primary" onclick="copyWallet()">Copy Wallet</button>
+        </div>
     </div>
 
-    <div>
-        <h3>Expert Plan</h3>
-        <p>Investment</p>
-        <h3>$60000</h3>
-        <p>-</p>
-        <h3>$Unlimited</h3>
-
-        <p>Profit</p>
-        <h3>4% Daily</h3>
-
-        <p>Duration</p>
-        <h3>78 Days</h3>
-
-        <p>Referral Bonus</p>
-        <h3>10%</h3>
-
-        <button class="btn btn-primary" onclick="redirectToInvestment(60000)">Invest Now</button>
+    <!-- Warning Message -->
+    <div class="alert alert-warning mt-3" role="alert">
+        <b>WARNING:</b> Send the exact deposit amount into the wallet address above.
     </div>
-</div>
 
+    <!-- Proof of Payment -->
+    <div class="mb-3">
+        <label for="proof_of_payment" class="form-label">Proof of Payment</label>
+        <input type="file" class="form-control" id="proof_of_payment" name="proof_of_payment" required>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary w-100">Submit Deposit</button>
+</form>
+
+<!-- JavaScript -->
 <script>
-    function redirectToInvestment(amount) {
-        window.location.href = "complete_invest.php?amount=" + amount;
+    // Wallet Addresses
+    var walletAddresses = {
+        "Ethereum": "piivgcgdxghgvhgchh",
+        "Bitcoin": "jhjkhjkhhghghgj",
+        "USDT": "johouhouhugiftyy",
+        "BNB": "ggyufydrittot",
+        "Dogecoin": "hiughiygyityt"
+    };
+
+    // Update Wallet Address Based on Selection
+    function updateWalletAddress() {
+        var method = document.getElementById("deposit_method").value;
+        document.getElementById("wallet_address").value = walletAddresses[method];
     }
+
+    // Copy Wallet Address
+    function copyWallet() {
+        var walletInput = document.getElementById("wallet_address").value;
+        navigator.clipboard.writeText(walletInput).then(() => {
+            alert("Wallet Address Copied: " + walletInput);
+        }).catch(err => {
+            console.error("Error copying: ", err);
+        });
+    }
+
+    // Assign Package Based on Investment Amount
+    function assignPackage() {
+        var investAmount = parseInt(document.getElementById("investment_amount").value);
+        var packageInput = document.getElementById("package");
+
+        if (investAmount === 100) {
+            packageInput.value = 'Basic';
+        } else if (investAmount === 5000) {
+            packageInput.value = 'Intermediate';
+        } else if (investAmount === 15000) {
+            packageInput.value = 'Professional';
+        } else if (investAmount === 60000) {
+            packageInput.value = 'Expert';
+        } else {
+            packageInput.value = ''; // No package assigned
+        }
+    }
+
+    // Initialize Defaults on Page Load
+    window.onload = function () {
+        updateWalletAddress();
+        assignPackage();
+    };
 </script>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  
+
+  </div>
 
 
 

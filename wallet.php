@@ -123,9 +123,9 @@ $conn->close();
           <div class="app-brand demo" style="margin-left: -20px">
           <a href="" class="app-brand-link">
             <span class="app-brand-logo demo">
-                   <img src="picture/section.png" alt="" style="width:100px">
+                    <img src="./assets/logo.png" alt="" style="width:80px">
                   </span>
-                  <span class="app-brand-text demo text-body fw-bolder" style="margin-left: -28px;color:black">ashStack</span>
+                  
              
             </a>
 
@@ -152,21 +152,15 @@ $conn->close();
               </a>
 
             </li>
-            <li class="menu-item">
-                <a href="referal.php" class="menu-link">
-                    <i class="bx bx-user me-2"></i>
-                  <div data-i18n="Layouts">Referal</div>
-                </a>
-  
-              </li>
+
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Pages</span>
             </li>
             
             <li class="menu-item active">
-              <a href="wallet.php" class="menu-link">
+              <a href="withdrawal.php" class="menu-link">
                 <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                <div data-i18n="Authentications">Wallet</div>
+                <div data-i18n="Authentications">Withdrawal</div>
               </a>
             </li>
             <li class="menu-item">

@@ -9,13 +9,13 @@ if (!isset($_SESSION['userId'])) {
 
 include './database/dbconfig.php'; 
 require 'send_email.php';
-// Check if form is submitted
+
 $userId = $_SESSION['userId'];
 
 // Fetch user details
 $sql = "SELECT * FROM users WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId); 
+$stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -23,189 +23,126 @@ if ($result->num_rows > 0) {
     $userDetails = $result->fetch_assoc();
     $fullName = $userDetails['fullname'];
     $email = $userDetails['email'];
+    $balance = $userDetails['balance'];
 } else {
     echo "No user found.";
     exit(); 
 }
 
-$reason = "";
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $sql = "SELECT subscription_date, last_withdrawal_date, available_withdrawal FROM users WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
-$stmt->close();
-
-// Prepare date objects
-$today = new DateTime();
-$subscriptionDate = new DateTime($user['subscription_date']);
-$lastWithdrawalDate = !empty($user['last_withdrawal_date']) ? new DateTime($user['last_withdrawal_date']) : null;
-$availableWithdrawal = $user['available_withdrawal'];
-// Define one week interval
-$oneWeekInterval = new DateInterval('P1W');
-
-// Determine eligibility for withdrawal
-$canWithdraw = false;
-$reason = "";
-
-// First withdrawal logic
-$firstWithdrawalDate = clone $subscriptionDate;
-$firstWithdrawalDate->add($oneWeekInterval);
-
-if (!$lastWithdrawalDate) {
-    // First withdrawal
-   if ($today >= $firstWithdrawalDate) {
-        if ($today->diff($firstWithdrawalDate)->days > 7) {
-            // User missed first week withdrawal; referral check applies
-            $sql = "SELECT package FROM investment WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $userId);
-            $stmt->execute();
-            $user = $stmt->get_result()->fetch_assoc();
-            $stmt->close();
-
-            $userPackage = $user['package'];
-
-            // Check referrals with the same package
-            $referralSql = "
-                SELECT COUNT(*) AS referral_count 
-                FROM referrals_table 
-                WHERE referral_id = ? AND package = ?
-            ";
-            $stmt = $conn->prepare($referralSql);
-            $stmt->bind_param("is", $userId, $userPackage);
-            $stmt->execute();
-            $referralResult = $stmt->get_result()->fetch_assoc();
-            $stmt->close();
-
-            if ($referralResult['referral_count'] > 0) {
-                $canWithdraw = true;
-            } else {
-                $reason = "You need to refer at least one person with the same package as you to make a withdrawal.";
-            }
-        } else {
-            $canWithdraw = true; // Still within the first week
-        }
-    } else {
-        $reason = "You can make your first withdrawal one week after investing.";
-    }
-} else {
-    // Determine the next eligible withdrawal date
-    $nextEligibleDate = clone $lastWithdrawalDate;
-    $nextEligibleDate->add($oneWeekInterval);
-    if ($today >= $nextEligibleDate) {
-      if ($lastWithdrawalDate == $firstWithdrawalDate) {
-          // Fetch the user's package
-          $sql = "SELECT package FROM investment WHERE id = ?";
-          $stmt = $conn->prepare($sql);
-          $stmt->bind_param("i", $userId);
-          $stmt->execute();
-          $user = $stmt->get_result()->fetch_assoc();
-          $stmt->close();
-  
-          $userPackage = $user['package'];
-  
-          // Check referrals with the same package
-          $referralSql = "
-              SELECT COUNT(*) AS referral_count 
-              FROM referrals_table 
-              WHERE referral_id = ? AND package = ?
-          ";
-          $stmt = $conn->prepare($referralSql);
-          $stmt->bind_param("is", $userId, $userPackage);
-          $stmt->execute();
-          $referralResult = $stmt->get_result()->fetch_assoc();
-          $stmt->close();
-  
-          if ($referralResult['referral_count'] > 0) {
-              $canWithdraw = true;
-          } else {
-              $reason = "You need to refer at least one person with the same package as you to make a withdrawal.";
-          }
-      } else {
-             // Fetch the user's package
-          $sql = "SELECT package FROM investment WHERE id = ?";
-          $stmt = $conn->prepare($sql);
-          $stmt->bind_param("i", $userId);
-          $stmt->execute();
-          $user = $stmt->get_result()->fetch_assoc();
-          $stmt->close();
-  
-          $userPackage = $user['package'];
-  
-          // Check referrals with the same package
-          $referralSql = "
-              SELECT COUNT(*) AS referral_count 
-              FROM referrals_table 
-              WHERE referral_id = ? AND package = ?
-          ";
-          $stmt = $conn->prepare($referralSql);
-          $stmt->bind_param("is", $userId, $userPackage);
-          $stmt->execute();
-          $referralResult = $stmt->get_result()->fetch_assoc();
-          $stmt->close();
-  
-          if ($referralResult['referral_count'] > 0) {
-              $canWithdraw = true;
-          } else {
-              $reason = "You need to refer at least one person with the same package as you to make a withdrawal.";
-          }
-      }
-  } else {
-      $reason = "You need to wait at least one week since your last withdrawal.";
-  }
-  
+function getUserTransactions($conn, $userId) {
+  $sql = "SELECT transaction_type, amount, status, date FROM transactions WHERE user_id = ? ORDER BY date DESC";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("i", $userId); 
+  $stmt->execute();
+  return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+$transactions = getUserTransactions($conn, $userId);
 
-  
+
+
+function getUserInvestments($conn, $userId) {
+  $sql = "SELECT * FROM investment WHERE user_id = ? and status = 'approved'";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("i", $userId); 
+  $stmt->execute();
+  return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+$investment = getUserInvestments($conn, $userId);
+
+$reason = "";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Fetch the user's package
+    $sql = "SELECT package FROM investment WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    $userPackage = $user['package'];
+
+    // Check referrals with the same package
+    $referralSql = "
+        SELECT COUNT(*) AS referral_count 
+        FROM referrals_table 
+        WHERE referral_id = ? AND package = ?
+    ";
+    $stmt = $conn->prepare($referralSql);
+    $stmt->bind_param("is", $userId, $userPackage);
+    $stmt->execute();
+    $referralResult = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if ($referralResult['referral_count'] > 0) {
+        $canWithdraw = true;
+    } else {
+        $canWithdraw = false;
+        $reason = "You need to refer at least one person with the same package to withdraw.";
+    }
+
     if ($canWithdraw) {
-      // Sanitize form inputs 
-      $accountName = filter_input(INPUT_POST, 'accountName', FILTER_SANITIZE_STRING);
-      $bankName = filter_input(INPUT_POST, 'bankName', FILTER_SANITIZE_STRING);
-      $accountNumber = filter_input(INPUT_POST, 'accountNumber', FILTER_SANITIZE_STRING);
-      $amount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        // Sanitize form inputs
+        $withdrawal_method = filter_input(INPUT_POST, 'withdrawal_method', FILTER_SANITIZE_STRING);
+        $amount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $wallet_address = filter_input(INPUT_POST, 'wallet_address', FILTER_SANITIZE_STRING);
 
-      if ($accountName && $bankName && $accountNumber && $amount) {
-          if ($amount > $availableWithdrawal) {
-              $reason = "You cannot withdraw an amount greater than your available withdrawal of $availableWithdrawal.";
-          } else {
-              $sql = "INSERT INTO transactions (id, account_name, bank_name, account_number, amount, transactionType, status, date, time) 
-                      VALUES (?, ?, ?, ?, ?, 'withdrawal', 'pending', CURDATE(), CURTIME())";
+        if ($withdrawal_method && $wallet_address && $amount) {
+            // Check if a pending withdrawal request already exists
+            $pendingSql = "SELECT COUNT(*) AS pending_count FROM withdrawal WHERE user_id = ? AND status = 'pending'";
+            $stmt = $conn->prepare($pendingSql);
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $pendingResult = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            if ($pendingResult['pending_count'] > 0) {
+          $reason = "You already have a pending withdrawal request. Please wait for it to be processed.";
+            } elseif ($amount > $balance) {
+          $reason = "You cannot withdraw an amount greater than your balance of $balance.";
+            } else {
+          $sql = "INSERT INTO withdrawal (user_id, withdrawal_method, amount, wallet_address, status, date) 
+            VALUES (?, ?, ?, ?, 'pending', CURDATE())";
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param("isss", $userId, $withdrawal_method, $amount, $wallet_address);
+
+          if ($stmt->execute()) {
+              $insertId = $stmt->insert_id;
+              $stmt->close();
+
+              $sql = "INSERT INTO transactions (user_id, insert_id, amount, status, date, transaction_type) 
+                VALUES (?, ?, ?, 'pending', CURDATE(), 'withdrawal')";
               $stmt = $conn->prepare($sql);
-              $stmt->bind_param("issss", $userId, $accountName, $bankName, $accountNumber, $amount);
+              $stmt->bind_param("iis", $userId, $insertId, $amount);
 
               if ($stmt->execute()) {
-                  // Update last withdrawal date
-                  $updateSql = "UPDATE users SET last_withdrawal_date = CURRENT_DATE WHERE id = ?";
-                  $updateStmt = $conn->prepare($updateSql);
-                  $updateStmt->bind_param("i", $userId);
-                  $updateStmt->execute();
-                  $updateStmt->close();
+            // Update last withdrawal date
+            $updateSql = "UPDATE users SET last_withdrawal_date = CURRENT_DATE WHERE id = ?";
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bind_param("i", $userId);
+            $updateStmt->execute();
+            $updateStmt->close();
 
-                  $reason = "Withdrawal request submitted successfully";
-                  $message = "Your withdrawal request has been submitted successfully. You will receive your earning upon confirmation";
-                  $subject ="Withdrawal request submitted successfully";
-                  if (sendEmail($fullName,$email, $message, $subject)) {
-                   // echo "Email sent successfully!";
-               } else {
-                   // echo "Failed to send email.";
-               }
+            $reason = "Withdrawal request submitted successfully.";
+            $message = "Your withdrawal request has been submitted successfully. You will receive your earnings upon confirmation.";
+            $subject = "Withdrawal Request Submitted Successfully";
+
+            sendEmail($fullName, $email, $message, $subject);
               } else {
-                  $reason = "Error processing withdrawal. Please try again.";
+            $reason = "Error processing withdrawal. Please try again.";
               }
               $stmt->close();
           }
-      } else {
-          $reason = "Invalid account details. Please fill out all fields correctly.";
-      }
-  }
+            }
+        } else {
+            $reason = "Invalid account details. Please fill out all fields correctly.";
+        }
+    }
 }
 
 $conn->close();
 ?>
-
 
 <!DOCTYPE html>
 
@@ -238,7 +175,7 @@ $conn->close();
       href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
       rel="stylesheet"
     />
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Icons. Uncomment required icon fonts -->
     <link rel="stylesheet" href="./vendor/fonts/boxicons.css" />
 
@@ -275,9 +212,9 @@ $conn->close();
           <div class="app-brand demo" style="margin-left: -20px">
           <a href="" class="app-brand-link">
             <span class="app-brand-logo demo">
-                   <img src="picture/section.png" alt="" style="width:100px">
+                    <img src="./assets/logo.png" alt="" style="width:80px">
                   </span>
-                  <span class="app-brand-text demo text-body fw-bolder" style="margin-left: -28px;color:black">ashStack</span>
+                  
              
             </a>
 
@@ -304,22 +241,17 @@ $conn->close();
               </a>
 
             </li>
-            <li class="menu-item">
-                <a href="referal.php" class="menu-link">
-                    <i class="bx bx-user me-2"></i>
-                  <div data-i18n="Layouts">Referal</div>
-                </a>
-  
-              </li>
+
 
             <li class="menu-header small text-uppercase">
               <span class="menu-header-text">Pages</span>
             </li>
             
+   
             <li class="menu-item active">
-              <a href="wallet.php" class="menu-link">
+              <a href="withdrawal.php" class="menu-link">
                 <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                <div data-i18n="Authentications">Wallet</div>
+                <div data-i18n="Authentications">Withdrawal</div>
               </a>
             </li>
             <li class="menu-item">
@@ -445,9 +377,14 @@ $conn->close();
                       </div>
                     
                     </div>
-                    <span>Available Withdrawal balance</span>
-                    <h3 class="card-title text-nowrap mb-1">₦<span class="counter" data-target="<?php echo htmlspecialchars($userDetails['available_withdrawal']); ?>">0</span></h3>
-                </div>
+                    <?php if (!empty($investment)): ?>
+                              <?php foreach ($investment as $inv):  ?>
+                             <h3 class="card-title text-nowrap mb-1" style="color:#fff">Balance: $<span><?php echo htmlspecialchars($userDetails['balance']); ?></span></h3>
+                             <?php endforeach; ?>
+<?php else: ?>
+    <h3 class="card-title text-nowrap mb-1" >Balance: $0</h3>
+<?php endif; ?>
+ </div>
                 </div>
               </div>
               <div style="margin-bottom: 20px;" id="diva">
@@ -472,166 +409,100 @@ $conn->close();
                           </div>
                           <div class="card-body">
                           <form id="accountLookupForm" method="post" action="">
-                          <div class="row mb-3">
-    <label class="col-sm-2 col-form-label" for="bank">Bank Name</label>
+<div class="row mb-3">
+    <label class="col-sm-2 col-form-label" for="bank">Withdrawal Method</label>
     <div class="col-sm-10">
-        <div class="input-group input-group-merge">
-            <span id="basic-icon-default-company2" class="input-group-text">
-                <i class="bx bx-buildings"></i>
-            </span>
-            <!-- Dropdown for bank selection -->
-            <select name="bankName" id="bank" class="form-select" onchange="setBankCode(this)">
-                <option value="">Loading banks...</option>
-            </select>
-            <!-- Hidden input to hold the bank name -->
-            <input type="hidden" id="hiddenBankName" name="bankName" />
-        </div>
-    </div>
+    <div class="input-group input-group-merge">
+    <span class="input-group-text"><i class="bx bx-buildings"></i></span>
+  <select name="withdrawal_method" id="" class="form-control">
+    <option value="bitcoin_cash">Bitcoin Cash</option>
+    <option value="litecoin">Litecoin</option>
+    <option value="ethereum">Ethereum</option>
+    <option value="usdt_erc20">USDT ERC 20</option>
+    <option value="usdt_trc20">USDT TRC 20</option>
+    <option value="bitcoin">Bitcoin</option>
+    <option value="bnb">BNB</option>
+  </select>
 </div>
-
-
-    <div class="row mb-3">
-        <label class="col-sm-2 col-form-label" for="accountNumber">Account Number</label>
-        <div class="col-sm-10">
-            <div class="input-group input-group-merge">
-                <span class="input-group-text"><i class="bx bx-buildings"></i></span>
-                <input type="text" name="accountNumber" id="accountNumber" class="form-control" required>
-            </div>
+</div>
         </div>
-    </div>
+ 
 
-    <div class="row mb-3">
-        <label class="col-sm-2 col-form-label" for="accountName">Account Name</label>
-        <div class="col-sm-10">
-            <div class="input-group input-group-merge">
-                <span id="basic-icon-default-fullname2" class="input-group-text">
-                    <i class="bx bx-user"></i>
-                </span>
-                <input type="text" name="accountName" id="accountName" class="form-control" required readonly>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <label class="col-sm-2 col-form-label" for="Amount">Amount</label>
+    
+  <div class="row mb-3">
+      <label class="col-sm-2 col-form-label" for="Amount">Amount</label>
         <div class="col-sm-10">
             <div class="input-group input-group-merge">
                 <span class="input-group-text"><i class="bx bx-buildings"></i></span>
                 <input type="text" name="amount" id="amount" class="form-control" required>
             </div>
         </div>
+  </div>
+
+    <div class="row mb-3">
+        <label class="col-sm-2 col-form-label" for="Amount">Wallet Address</label>
+        <div class="col-sm-10">
+            <div class="input-group input-group-merge">
+                <span class="input-group-text"><i class="bx bx-buildings"></i></span>
+                <input type="text" name="wallet_address" id="" class="form-control" required>
+            </div>
+        </div>
     </div>
+
     <div class="row justify-content-end">
         <div class="col-sm-10">
-            <button type="submit" class="btn btn-primary">Withdraw</button>
+            <button type="submit" class="btn btn-primary">Submit Withdraw</button>
         </div>
     </div>
 </form>
 
-<script>
-    let bankCode = ''; // To store the selected bank code
-    let bankName = ''; // To store the selected bank name
+<br>
+<br><hr>
+<div class="container mt-4">
+    <h5 class="text-left mb-4">Transaction History</h5>
 
-    // Function to handle setting the bank code and bank name when a bank is selected
-    function setBankCode(select) {
-        bankCode = select.value; // Store the bank code for account lookup
-        bankName = select.options[select.selectedIndex].text; // Store the bank name for submission
+    <?php if (!empty($transactions)) : ?>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Transaction Type</th>
+                        <th>Amount ($)</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($transactions as $transaction) : ?>
+                        <tr>
+                            <td><?php echo ucfirst(htmlspecialchars($transaction['transaction_type'])); ?></td>
+                            <td>$<?php echo number_format($transaction['amount'], 2); ?></td>
+                            <td>
+                                <?php
+                                if ($transaction['status'] == 'pending') {
+                                    echo '<span class="badge bg-warning text-dark">Pending</span>';
+                                } elseif ($transaction['status'] == 'success') {
+                                    echo '<span class="badge bg-success">Success</span>';
+                                } else {
+                                    echo '<span class="badge bg-danger">Failed</span>';
+                                }
+                                ?>
+                            </td>
+                            <td><?php echo date("d M Y h:i A", strtotime($transaction['date'])); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php else : ?>
+        <div class="alert alert-info text-center" role="alert">
+            No transactions found.
+        </div>
+    <?php endif; ?>
+</div>
 
-        // Set the hidden input value for form submission
-        document.getElementById('hiddenBankName').value = bankName;
-    }
-
-
-    // Function to fetch and populate the bank dropdown
-    async function fetchBanks() {
-        const bankSelect = document.getElementById('bank');
-        bankSelect.innerHTML = '<option value="">Loading banks...</option>'; // Show loading message
-
-        try {
-            const response = await fetch('fetchBanks.php'); // Call PHP script to fetch bank list
-            const data = await response.json();
-
-            if (data.error) {
-                // Display error if present
-                bankSelect.innerHTML = `<option value="">Error: ${data.error}</option>`;
-            } else if (data.data && Array.isArray(data.data)) {
-                // Populate dropdown with bank options
-                bankSelect.innerHTML = '<option value="">Select a Bank</option>';
-                data.data.forEach(bank => {
-                    const option = document.createElement('option');
-                    option.value = bank.code; // Bank code used for account lookup
-                    option.textContent = bank.name; // Bank name displayed to the user
-                    bankSelect.appendChild(option);
-                });
-            } else {
-                // Handle unexpected data structure
-                bankSelect.innerHTML = '<option value="">Error: No banks found</option>';
-            }
-        } catch (error) {
-            // Handle network or other errors
-            bankSelect.innerHTML = `<option value="">Error: ${error.message}</option>`;
-            console.error('Fetch error:', error);
-        }
-    }
-
-    // Function to handle the account lookup when account number loses focus
-    const handleAccountLookup = async () => {
-        const accountNumber = document.getElementById('accountNumber').value;
-
-        if (!accountNumber || !bankCode) {
-            alert('Please select a bank and enter an account number.');
-            return;
-        }
-
-        try {
-            const response = await fetch('resolveAccount.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    account_number: accountNumber,
-                    bank_code: bankCode, // Use the bank code for account lookup
-                }),
-            });
-
-            const data = await response.json();
-
-            if (data.error) {
-                alert(data.error);
-                document.getElementById('accountName').value = ''; // Clear on error
-            } else if (data.data && data.data.account_name) {
-                document.getElementById('accountName').value = data.data.account_name; // Display account name
-            } else {
-                alert('Failed to resolve account name. Please check your details.');
-                document.getElementById('accountName').value = '';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An unexpected error occurred during account lookup.');
-            document.getElementById('accountName').value = '';
-        }
-    };
-
-    // Attach an event listener to trigger lookup when the account number input loses focus
-    document.getElementById('accountNumber').addEventListener('blur', handleAccountLookup);
-
-    // Fetch and populate the bank list when the page loads
-    document.addEventListener('DOMContentLoaded', fetchBanks);
-
-    // Function to handle form submission
-    const handleSubmit = () => {
-        const submissionData = {
-            accountNumber: document.getElementById('accountNumber').value,
-            bankName: bankName, // Use the bank name for form submission
-        };
-
-        console.log('Submitting form with data:', submissionData);
-        // Perform your submission logic here, e.g., send data to the server
-    };
-
-    // Attach an event listener to handle form submission
-    document.getElementById('submitButton').addEventListener('click', handleSubmit);
-</script>
+<!-- Bootstrap JavaScript (Optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
